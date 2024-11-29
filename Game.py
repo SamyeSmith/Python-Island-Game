@@ -16,22 +16,26 @@ Quit = False
 Error = False
 Monster = 0
 Moves = 0
-
+Player = "P"
+X = 0
+Y = 0
 
 #Creating map
 def initalise_map(map_size):
     global Map
     Map = [] #creating list for a Map
+    #Map.append("P")
     for i in range(map_size):#setting how large the Map will become
         Level = [0] * map_size#making the width the same as height to make a square
         Map.append(Level)#adding nine 0s into the list
+    print("Test")
     # return Map
 #def print_map():
     for Level in Map:
         print("[ ", end='')#Adds [ to the start of the line
         print(" ][ ".join(map(str, Level)), end='')#print the list of Map seprated by ][  , 'end to make the line continuous
         print(" ]")#Adds ] at the end of the line
-    
+    Map[1:0]="P"
         
 
 #Opening message
@@ -65,7 +69,9 @@ def opening_message():
         Error_message()
 #print_map()
 
-
+#insert player
+def player_start():
+    print("P")
 
 
 
