@@ -17,6 +17,7 @@ Error = False
 Monster = 0
 Moves = 0
 Player = "P"
+Users = []
 X = 0
 Y = 0
 
@@ -25,6 +26,7 @@ def initalise_map(map_size):
     global Map
     Map = [] #creating list for a Map
     #Map.append("P")
+    global Level
     for i in range(map_size):#setting how large the Map will become
         Level = [0] * map_size#making the width the same as height to make a square
         Map.append(Level)#adding nine 0s into the list
@@ -35,7 +37,7 @@ def initalise_map(map_size):
         print("[ ", end='')#Adds [ to the start of the line
         print(" ][ ".join(map(str, Level)), end='')#print the list of Map seprated by ][  , 'end to make the line continuous
         print(" ]")#Adds ] at the end of the line
-    Map[1:0]="P"
+
         
 
 #Opening message
@@ -70,8 +72,44 @@ def opening_message():
 #print_map()
 
 #insert player
-def player_start():
-    print("P")
+class User:
+    def __init__(self, id, health, x, y):
+        self.id = id
+        self.health = health
+        self.x = x
+        self.y = y
+    
+    def getX(self):
+        return self.x
+
+    def gety(self):
+        return self.y
+
+    def movement(self, direction):
+        if direction == "up" and self.y > 0:
+            self.y -= 1
+        elif direction == "down" and self.y < len(Level) - 1:
+            self.y += 1
+        elif direction == "left" and self.x > 0:
+            self.x -= 1
+        elif direction == "right" and self.x < len(Level) - 1:
+            self.x += 1
+        else:
+            print("Invalid entry")
+        GridRefresh()
+
+
+def user_start():
+    x = 0
+    y = 0
+    Users.append(User(Health, x, y))
+    Map[y][x] = str(1)
+    print(f"User starting at 0, 0.")
+
+def GridRefresh():
+    global Level
+    initalise_map(len(Level))
+    Level[Users.getY()][Users.getX()] = str(Users.id)
 
 
 
@@ -119,4 +157,4 @@ def Error_message():
 #Running functions
 
 opening_message()
-
+user_start()
