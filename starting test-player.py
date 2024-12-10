@@ -7,15 +7,17 @@ health = 5
 skill_bs = False
 skill_dfs = False
 skill_bfs = False
-treasure = False
+treasure = 0
 quit_game = False
 error = False
 monster = 0
 moves = 0
 player = "U"
 users = []
+treasures = []
 x = 0
 y = 0
+map_size_q = 0
 
 # Creating map
 def initialize_map(size):
@@ -81,17 +83,48 @@ class User:
             print("Invalid entry")
         grid_refresh()
 
+class Treasure:
+    def __init__(self, id, t_x, t_y):
+        self.id = id
+        self.t_x = t_x
+        self.t_y = t_y
+    
+    def get_t_x(self):
+        return self.t_x
+
+    def get_t_y(self):
+        return self.t_y
+
 def user_start():
     user = User(1, health, 0, 0)
     users.append(user)
     map_data[0][0] = "U"
     print("User starting at 0, 0.")
 
+def treasure_place():
+    treasure = Treasure(1, 0, 0)
+    treasures.append(treasure)
+    if map_size_q =="1":
+        map_data[random.randrange(0,6)][random.randrange(0,6)] = "T"
+    if map_size_q =="2":
+        map_data[random.randrange(0,10)][random.randrange(0,10)] = "T"
+    if map_size_q =="3":
+        map_data[random.randrange(0,13)][random.randrange(0,13)] = "T"
+    print("Treasure placed")
+
 def grid_refresh():
     initialize_map(len(map_data))
     for user in users:
         map_data[user.get_y()][user.get_x()] = "U"
+    for tresure in treasures:
+        map_data[tresure.get_t_x()][tresure.get_t_y()] = "T"
     print_map()
+
+def check_trap(t_x, t_y):
+    for treasure in treasures:
+        treasure = treasure +1
+        if x and y == t_x and t_y:
+            print("You have found treasue! \n Either esacpe or look for more.")
 
 def user_move():
     direction = input("Enter user movement. UP DOWN LEFT RIGHT").lower()
@@ -99,6 +132,7 @@ def user_move():
 
         user.move(direction)
     grid_refresh()
+    check_trap(Treasure.t_x, Treasure.t_y)
 
 
 def error_message():
@@ -111,6 +145,7 @@ def error_message():
 
 # Running functions
 opening_message()
+treasure_place()
 user_start()
 print_map()
 user_move()
