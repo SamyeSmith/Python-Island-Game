@@ -12,7 +12,7 @@ quit_game = False
 error = False
 monster = 0
 moves = 0
-player = "P"
+player = "U"
 users = []
 x = 0
 y = 0
@@ -84,14 +84,22 @@ class User:
 def user_start():
     user = User(1, health, 0, 0)
     users.append(user)
-    map_data[0][0] = "P"
+    map_data[0][0] = "U"
     print("User starting at 0, 0.")
 
 def grid_refresh():
     initialize_map(len(map_data))
     for user in users:
-        map_data[user.get_y()][user.get_x()] = "P"
+        map_data[user.get_y()][user.get_x()] = "U"
     print_map()
+
+def user_move():
+    direction = input("Enter user movement. UP DOWN LEFT RIGHT").lower()
+    for user in users:
+
+        user.move(direction)
+    grid_refresh()
+
 
 def error_message():
     print("""
@@ -105,3 +113,4 @@ def error_message():
 opening_message()
 user_start()
 print_map()
+user_move()
