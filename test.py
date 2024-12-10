@@ -8,6 +8,7 @@ skill_bs = False
 skill_dfs = False
 skill_bfs = False
 treasure = 0
+treasure = int(treasure)
 quit_game = False
 error = False
 monster = 0
@@ -16,6 +17,7 @@ player = "U"
 users = []
 treasures = []
 traps = []
+powers =[]
 x = 0
 y = 0
 map_size_q = 0
@@ -26,6 +28,7 @@ def initialize_map(size):
     map_data = [[0] * size for _ in range(size)]
     print("Map initialized")
 
+#displaying the map
 def print_map():
     for level in map_data:
         print("[ ", end='')
@@ -110,6 +113,18 @@ class Trap:
     def get_tr_y(self):
         return self.tr_y
 
+class Power:
+    def __init__(self, id, p_x, p_y):
+        self.id = id
+        self.p_x = p_x
+        self.p_y = p_y
+    
+    def get_p_x(self):
+        return self.p_x
+
+    def get_p_y(self):
+        return self.p_y
+
 def user_start():
     user = User(1, health, 0, 0)
     users.append(user)
@@ -119,7 +134,7 @@ def user_start():
 def treasure_place():  
     global treasure
     treasures.clear()  # Clear any existing treasures
-    num_treasures = 3  # Number of treasures to place
+    num_treasures = 5  # Number of treasures to place
     for _ in range(num_treasures):
         if map_size_q == "1":
             t_x = random.randrange(0, 5)
@@ -150,30 +165,103 @@ def trap_place():
         elif map_size_q == "3":
             tr_x = random.randrange(0, 12)
             tr_y = random.randrange(0, 12)
-        trap = Trap(len(trap) + 1, tr_x, tr_y)
+        trap = Trap(len(traps) + 1, tr_x, tr_y)
         traps.append(trap)
     for trap in traps:
-        map_data[trap.get_tr_y()][treasure.get_tr_x()] = "T"
+        map_data[trap.get_tr_y()][trap.get_tr_x()] = "C"
     print("Trap placed")
+
+def power_place():  
+    global power
+    powers.clear()  # Clear any existing treasures
+    num_power = 3  # Number of treasures to place
+    for _ in range(num_power):
+        if map_size_q == "1":
+            p_x = random.randrange(0, 5)
+            p_y = random.randrange(0, 5)
+        elif map_size_q == "2":
+            p_x = random.randrange(0, 9)
+            p_y = random.randrange(0, 9)
+        elif map_size_q == "3":
+            p_x = random.randrange(0, 12)
+            p_y = random.randrange(0, 12)
+        power = Power(len(powers) + 1, p_x, p_y)
+        powers.append(power)
+    for power in powers:
+        map_data[power.get_p_y()][power.get_p_x()] = "P"
+    print("Powers placed")
 
 def grid_refresh():
     initialize_map(len(map_data))
-    for user in users:
-        map_data[user.get_y()][user.get_x()] = "U"
     for treasure in treasures:
         map_data[treasure.get_t_y()][treasure.get_t_x()] = "T"
+    for trap in traps:
+        map_data[trap.get_tr_y()][trap.get_tr_x()] = "C"
+    for user in users:
+        map_data[user.get_y()][user.get_x()] = "U"
+    for power in powers:
+        map_data[power.get_p_y()][power.get_p_x()] = "P"
     print_map()
 
 def check_tresure(x, y):
     for treasure in treasures:
         if x == treasure.get_t_x() and y == treasure.get_t_y():
             print("You have found treasure! \n Either escape or look for more.")
-            treasure = treasure +1
+            # treasure = treasure +1
+            treasure =+ 1
+        # treasures.remove(treasure)
 
 def check_trap(x, y):
+    global health
     for trap in traps:
         if x == trap.get_tr_x() and y == trap.get_tr_y():
             print("You have found a trap! \n Answer a riddle or lose health.")
+            riddle = random.randrange(0, 3)
+            if riddle == 0:
+                riddle_answer0 = input("Riddle: What has a face and two hands but no arms or legs?").lower()
+                if riddle_answer0 != "clock" and riddle_answer0 != "a clock":
+                    print("You have fallen into the trap!")
+                    health = health -1
+                    print(f"You have {health} health left.")
+                    if health == 0:
+                        end_game()
+                else:
+                    print("Congratulations,you passed the trap!")
+
+            elif riddle == 1:
+                riddle_answer1 = input("Im the rare case when today comes before yesterday. What am I?").lower()
+                if riddle_answer1 != "a dictionary" and riddle_answer1 != "dictionary":
+                    print("You have fallen into the trap!")
+                    health = health -1
+                    print(f"You have {health} health left.")
+                    if health == 0:
+                        end_game()
+                else:
+                    print("Congratulations,you passed the trap!")
+
+            elif riddle == 2:
+                riddle_answer2 = input("What goes all the way around the world but stays in a corner?").lower()
+                if riddle_answer2 != "a stamp" and riddle_answer2 != "stamp":
+                    print("You have fallen into the trap!")
+                    health = health -1
+                    print(f"You have {health} health left.")
+                    if health == 0:
+                        end_game()
+                else:
+                    print("Congratulations,you passed the trap!")
+
+
+def check_power(x, y):
+    for power in powers:
+        if x == power.get_p_x() and y == power.get_p_y():
+            print("You have found a power up!")
+            search = random.randrange(0, 3)
+            if search == 0:
+                print("You have activted the BFS search for treasure.")
+            elif search == 1:
+                print("You have activated the DFS search for treasure.")
+            elif search == 2:
+                print("You hve activated the BS search for treasure.")
             
 
 def user_move():
@@ -183,19 +271,34 @@ def user_move():
     for user in users:
         check_trap(user.get_x(), user.get_y())
         check_tresure(user.get_x(), user.get_y())
+        check_power(user.get_x(), user.get_y())
+    user_move()
 
 def error_message():
     print("""
     Error...
     Restarting...
     """)
-    time.sleep(5)
+    time.sleep(2)
     opening_message()
+
+def end_game():
+    print("Your game is over, you have lost.")
+    time.sleep(2)
+    quit()
+
+def exit():
+    print(f"You have escaped with {treasure} treasure! Well done!")
+    time.sleep(2)
+    quit()
+
 
 # Running functions
 opening_message()
 time.sleep(1)
 treasure_place()
+trap_place()
+power_place()
 user_start()
 print_map()
 time.sleep(1)
