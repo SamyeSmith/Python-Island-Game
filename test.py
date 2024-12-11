@@ -29,6 +29,7 @@ global T
 T = "T"
 high = 0
 low = 0
+mid = 0
 
 # Creating map
 def initialize_map(size):
@@ -262,6 +263,7 @@ def check_trap(x, y):
 
 
 def binary_seach(bs_list, low, high, T):
+    global mid
     bs_list = map_data
     if map_size_q == "1":
         high = str(high)
@@ -308,7 +310,7 @@ def user_move(bs_list, low, high, T):
         check_trap(user.get_x(), user.get_y())
         check_tresure(user.get_x(), user.get_y())
         check_power(user.get_x(), user.get_y(), bs_list, low, high, T)
-    user_move()
+    user_move(bs_list, low, high, T)
 
 def error_message():
     print("""
