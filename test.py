@@ -21,6 +21,14 @@ powers =[]
 x = 0
 y = 0
 map_size_q = 0
+global bs_list
+global high
+global low
+global mid
+global T
+T = "T"
+high = 0
+low = 0
 
 # Creating map
 def initialize_map(size):
@@ -253,27 +261,53 @@ def check_trap(x, y):
                     print("Congratulations,you passed the trap!")
 
 
-def check_power(x, y):
+def binary_seach(bs_list, low, high, T):
+    bs_list = map_data
+    if map_size_q == "1":
+        high = str(high)
+        high = 5
+        low = str(low)
+        low = 0
+        mid = str(mid)
+        if high >= low:
+            mid = (high + low) // 2
+
+            if bs_list[mid] == T:
+                return mid
+            
+            elif map_data[mid] > T:
+                return binary_seach(bs_list, low, mid -1, T)
+            
+            else:
+                return binary_seach(bs_list, mid + 1, high, T)
+        else:
+            return -1
+    BS_result = binary_seach(bs_list, 0, len(bs_list)-1, T)
+
+
+def check_power(x, y, bs_list, low, high, T):
     for power in powers:
         if x == power.get_p_x() and y == power.get_p_y():
             print("You have found a power up!")
             search = random.randrange(0, 3)
+            search = 0
             if search == 0:
                 print("You have activted the BFS search for treasure.")
+                binary_seach(bs_list, low, high, T)
             elif search == 1:
                 print("You have activated the DFS search for treasure.")
             elif search == 2:
                 print("You hve activated the BS search for treasure.")
             
 
-def user_move():
+def user_move(bs_list, low, high, T):
     direction = input("Enter user movement. UP DOWN LEFT RIGHT: ").lower()
     for user in users:
         user.move(direction)
     for user in users:
         check_trap(user.get_x(), user.get_y())
         check_tresure(user.get_x(), user.get_y())
-        check_power(user.get_x(), user.get_y())
+        check_power(user.get_x(), user.get_y(), bs_list, low, high, T)
     user_move()
 
 def error_message():
@@ -294,6 +328,10 @@ def win_game():
     time.sleep(2)
     quit()
 
+    
+
+
+
 
 # Running functions
 opening_message()
@@ -304,4 +342,5 @@ power_place()
 user_start()
 print_map()
 time.sleep(1)
-user_move()
+bs_list = map_data
+user_move(bs_list, low, high, T)
