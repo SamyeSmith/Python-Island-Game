@@ -134,7 +134,8 @@ def user_start():
 def treasure_place():  
     global treasure
     treasures.clear()  # Clear any existing treasures
-    num_treasures = 5  # Number of treasures to place
+    num_treasures = 1  # Number of treasures to place
+
     for _ in range(num_treasures):
         if map_size_q == "1":
             t_x = random.randrange(0, 5)
@@ -154,7 +155,7 @@ def treasure_place():
 def trap_place():  
     global trap
     traps.clear()  # Clear any existing treasures
-    num_traps = 3  # Number of treasures to place
+    num_traps = 5  # Number of treasures to place
     for _ in range(num_traps):
         if map_size_q == "1":
             tr_x = random.randrange(0, 5)
@@ -206,9 +207,10 @@ def grid_refresh():
 def check_tresure(x, y):
     for treasure in treasures:
         if x == treasure.get_t_x() and y == treasure.get_t_y():
-            print("You have found treasure! \n Either escape or look for more.")
+            print("You have found treasure! \n You win.")
             # treasure = treasure +1
             treasure =+ 1
+            win_game()
         # treasures.remove(treasure)
 
 def check_trap(x, y):
@@ -287,8 +289,8 @@ def end_game():
     time.sleep(2)
     quit()
 
-def exit():
-    print(f"You have escaped with {treasure} treasure! Well done!")
+def win_game():
+    print(f"You have escaped with treasure! Well done!")
     time.sleep(2)
     quit()
 
