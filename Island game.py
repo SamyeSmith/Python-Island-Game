@@ -23,6 +23,7 @@ x = 0
 y = 0
 map_size_q = 0
 bs_search_list = []
+traces = []
 # global bs_list
 # global high
 # global low
@@ -139,10 +140,37 @@ class Power:
 
     def get_p_y(self):
         return self.p_y
+    
+class Trace:
+    def __init__(self, id, tc_x, tc_y):
+        self.id = id
+        self.tc_x = tc_x
+        self.tc_y = tc_y
+
+    def get_tc_x(self):
+        return self.tc_x
+    
+    def get_tc_y(self):
+        return self.tc_y
+    
+    def Tmove(self, direction):
+        if direction == "up" and self.tc_y > 0:
+            self.tc_y -= 1
+        elif direction == "down" and self.tc_y < len(map_data) - 1:
+            self.tc_y += 1
+        elif direction == "left" and self.tc_x > 0:
+            self.tc_x -= 1
+        elif direction == "right" and self.tc_x < len(map_data[0]) - 1:
+            self.tc_x += 1
+        else:
+            print("Invalid entry")
+    
 
 def user_start():
     user = User(1, health, 0, 0)
+    trace = Trace(1,0,0)
     users.append(user)
+    traces.append(trace)
     map_data[0][0] = "U"
     print("User starting at 0, 0.")
 
@@ -164,7 +192,7 @@ def treasure_place():
         treasure = Treasure(len(treasures) + 1, t_x, t_y)
         treasures.append(treasure)
     for treasure in treasures:
-        map_data[treasure.get_t_y()][treasure.get_t_x()] = "T"
+        map_data[treasure.get_t_y()][treasure.get_t_x()] = "0"
     print("Treasure placed")
 
 def trap_place():  
@@ -184,13 +212,13 @@ def trap_place():
         trap = Trap(len(traps) + 1, tr_x, tr_y)
         traps.append(trap)
     for trap in traps:
-        map_data[trap.get_tr_y()][trap.get_tr_x()] = "C"
+        map_data[trap.get_tr_y()][trap.get_tr_x()] = "0"
     print("Trap placed")
 
 def power_place():  
     global power
     powers.clear()  # Clear any existing treasures
-    num_power = 3  # Number of treasures to place
+    num_power = 5  # Number of treasures to place
     for _ in range(num_power):
         if map_size_q == "1":
             p_x = random.randrange(1, 5)
@@ -210,9 +238,9 @@ def power_place():
 def grid_refresh():
     initialize_map(len(map_data))
     for treasure in treasures:
-        map_data[treasure.get_t_y()][treasure.get_t_x()] = "T"
+        map_data[treasure.get_t_y()][treasure.get_t_x()] = "0"#T
     for trap in traps:
-        map_data[trap.get_tr_y()][trap.get_tr_x()] = "C"
+        map_data[trap.get_tr_y()][trap.get_tr_x()] = "0"#C
     for user in users:
         map_data[user.get_y()][user.get_x()] = "U"
     for power in powers:
@@ -306,46 +334,54 @@ def check_trap(x, y):
 #                 i += 1
 
 
-def binary_search(bs_x, y):
-    for user in users:
-        bs_x = user.get_x()
-        for i in range(mrange + 1):
-            bs_search_list.append(i) # making the list that will be used for BS search
-            i += 1
-            low = 0
-            high = mrange + 1
-            v = 0
-            # bs_y = bs_search_list[x]
-            # print(bs_y)
-            # x += 1
+# def binary_search(bs_x, y):
+#         for i in range(mrange + 1):
+#             bs_search_list.append(i) # making the list that will be used for BS search
+#             i += 1
+#             low = 0
+#             high = mrange + 1
+#             # bs_y = bs_search_list[x]
+#             # print(bs_y)
+#             # x += 1
 
-            if v == 0:
+#             # if v == 0:
 
-                if high >= low:
+#         while high >= low:
 
-                    mid = (high + low) // 2
+#                 mid = (high + low) // 2
 
-                    target = bs_search_list[mid]
+#                 if bs_search_list[mid] == treasure.get_t_y():
+#                     print (f"Treasure is on y: {treasure.get_t_y()}")
+#                     break
 
-                    if bs_x == power.get_p_x() and target == power.get_p_y():
-                        print (f"Power found at {bs_x}, {i}.")
-                        v =+ 1
+#                 elif bs_search_list[mid] > treasure.get_t_y:
+#                     high =- 1
+
+#                 else:
+#                     low =+ 1
+
+                    # if bs_x == power.get_p_x() and target == power.get_p_y():
+                    #     print (f"Power found at {bs_x}, {i}.")
+                    #     v =+ 1
                     
-                    elif bs_x == trap.get_tr_x() and target == trap.get_tr_y():
-                        print (f"Trap found at {bs_x}, {i}.")
+                    # elif bs_x == trap.get_tr_x() and target == trap.get_tr_y():
+                    #     print (f"Trap found at {bs_x}, {i}.")
+                    #     v =+ 1
+                    
 
-                    else:
-                        i += 1
+                    # else:
+                    #     i += 1
 
 
 def check_power(x, y):
     for power in powers:
         if x == power.get_p_x() and y == power.get_p_y():
+            t_y = treasure.get_t_y
             print("You have found a power up!")
-            search = random.randrange(0, 3)
-            search = 0
+            search = random.randrange(0, 4)
+            # search = 3
             if search == 0:
-                print("You have activted the BS search for treasure.")
+                print("You have activted the default search for treasure.")
                 
                 for user in users:
                     bs_x = user.get_x()
@@ -361,8 +397,33 @@ def check_power(x, y):
 
             elif search == 1:
                 print("You have activated the DFS search for treasure.")
+                print("Not Implemented")
             elif search == 2:
                 print("You hve activated the BFS search for treasure.")
+                print("Not Implemented")
+            elif search == 3:
+                print("You have activated the BS search")
+
+                for i in range(mrange + 1):
+                    bs_search_list.append(i)
+                    i += 1
+                    low = 0
+                    high = mrange + 1
+
+                while high >= low:
+
+                    mid = (high + low) // 2
+
+                    if bs_search_list[mid] == treasure.get_t_y():
+                        print (f"Treasure is on y: {treasure.get_t_y()}")
+                        break
+
+                    elif bs_search_list[mid] > treasure.get_t_y():
+                        high = mid - 1
+
+                    else:
+                        low = mid + 1
+
             
 
 def user_move():
