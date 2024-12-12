@@ -2,6 +2,7 @@ import time
 import random
 
 # Setting global variables
+global bs_search_list
 map_size = 0
 health = 5
 skill_bs = False
@@ -17,19 +18,20 @@ player = "U"
 users = []
 treasures = []
 traps = []
-powers =[]
+powers = []
 x = 0
 y = 0
 map_size_q = 0
-global bs_list
-global high
-global low
-global mid
-global T
-T = "T"
-high = 0
-low = 0
-mid = 0
+bs_search_list = []
+# global bs_list
+# global high
+# global low
+# global mid
+# global T
+# T = "T"
+# high = 0
+# low = 0
+# mid = 0
 
 # Creating map
 def initialize_map(size):
@@ -47,6 +49,7 @@ def print_map():
 # Opening message
 def opening_message():
     global map_size_q
+    global mrange
     print("""
     Welcome to the island.
     You are stranded on a desert island, your aim is to find treasure around the island and make your way to a life boat.
@@ -62,12 +65,15 @@ def opening_message():
     """)
     if map_size_q == "1":
         print("You have chosen small map size. 5x5")
+        mrange = 5
         initialize_map(5)
     elif map_size_q == "2":
         print("You have chosen medium map size. 9x9")
+        mrange = 9
         initialize_map(9)
     elif map_size_q == "3":
         print("You have chosen large map size. 12x12")
+        mrange = 12
         initialize_map(12)
     else:
         error_message()
@@ -147,13 +153,13 @@ def treasure_place():
 
     for _ in range(num_treasures):
         if map_size_q == "1":
-            t_x = random.randrange(0, 5)
+            t_x = random.randrange(1, 5)
             t_y = random.randrange(0, 5)
         elif map_size_q == "2":
             t_x = random.randrange(0, 9)
-            t_y = random.randrange(0, 9)
+            t_y = random.randrange(1, 9)
         elif map_size_q == "3":
-            t_x = random.randrange(0, 12)
+            t_x = random.randrange(1, 12)
             t_y = random.randrange(0, 12)
         treasure = Treasure(len(treasures) + 1, t_x, t_y)
         treasures.append(treasure)
@@ -167,13 +173,13 @@ def trap_place():
     num_traps = 5  # Number of treasures to place
     for _ in range(num_traps):
         if map_size_q == "1":
-            tr_x = random.randrange(0, 5)
+            tr_x = random.randrange(1, 5)
             tr_y = random.randrange(0, 5)
         elif map_size_q == "2":
             tr_x = random.randrange(0, 9)
-            tr_y = random.randrange(0, 9)
+            tr_y = random.randrange(1, 9)
         elif map_size_q == "3":
-            tr_x = random.randrange(0, 12)
+            tr_x = random.randrange(1, 12)
             tr_y = random.randrange(0, 12)
         trap = Trap(len(traps) + 1, tr_x, tr_y)
         traps.append(trap)
@@ -187,13 +193,13 @@ def power_place():
     num_power = 3  # Number of treasures to place
     for _ in range(num_power):
         if map_size_q == "1":
-            p_x = random.randrange(0, 5)
+            p_x = random.randrange(1, 5)
             p_y = random.randrange(0, 5)
         elif map_size_q == "2":
             p_x = random.randrange(0, 9)
-            p_y = random.randrange(0, 9)
+            p_y = random.randrange(1, 9)
         elif map_size_q == "3":
-            p_x = random.randrange(0, 12)
+            p_x = random.randrange(1, 12)
             p_y = random.randrange(0, 12)
         power = Power(len(powers) + 1, p_x, p_y)
         powers.append(power)
@@ -262,55 +268,112 @@ def check_trap(x, y):
                     print("Congratulations,you passed the trap!")
 
 
-def binary_seach(bs_list, low, high, T):
-    global mid
-    bs_list = map_data
-    if map_size_q == "1":
-        high = str(high)
-        high = 5
-        low = str(low)
-        low = 0
-        mid = str(mid)
-        if high >= low:
-            mid = (high + low) // 2
+# def binary_seach(bs_list, low, high, T):
+#     global mid
+#     bs_list = map_data
+#     if map_size_q == "1":
+#         high = str(high)
+#         high = 5
+#         low = str(low)
+#         low = 0
+#         mid = str(mid)
+#         if high >= low:
+#             mid = (high + low) // 2
 
-            if bs_list[mid] == T:
-                return mid
+#             if bs_list[mid] == T:
+#                 return mid
             
-            elif map_data[mid] > T:
-                return binary_seach(bs_list, low, mid -1, T)
+#             elif map_data[mid] > T:
+#                 return binary_seach(bs_list, low, mid -1, T)
             
-            else:
-                return binary_seach(bs_list, mid + 1, high, T)
-        else:
-            return -1
-    BS_result = binary_seach(bs_list, 0, len(bs_list)-1, T)
+#             else:
+#                 return binary_seach(bs_list, mid + 1, high, T)
+#         else:
+#             return -1
+#     BS_result = binary_seach(bs_list, 0, len(bs_list)-1, T)
+
+# def binary_search(bs_x, y):
+#     for user in users:
+#         bs_x = user.get_x()
+#         for i in range(mrange):
+#             if bs_x == power.get_p_x() and i == power.get_p_y():
+#                 print (f"Power found at {bs_x}, {i}.")
+                
+#             elif bs_x == trap.get_tr_x() and y == trap.get_tr_y():
+#                 print (f"Trap found at {bs_x}, {i}.")
+
+#             else:
+#                 i += 1
 
 
-def check_power(x, y, bs_list, low, high, T):
+def binary_search(bs_x, y):
+    for user in users:
+        bs_x = user.get_x()
+        for i in range(mrange + 1):
+            bs_search_list.append(i) # making the list that will be used for BS search
+            i += 1
+            low = 0
+            high = mrange + 1
+            v = 0
+            # bs_y = bs_search_list[x]
+            # print(bs_y)
+            # x += 1
+
+            if v == 0:
+
+                if high >= low:
+
+                    mid = (high + low) // 2
+
+                    target = bs_search_list[mid]
+
+                    if bs_x == power.get_p_x() and target == power.get_p_y():
+                        print (f"Power found at {bs_x}, {i}.")
+                        v =+ 1
+                    
+                    elif bs_x == trap.get_tr_x() and target == trap.get_tr_y():
+                        print (f"Trap found at {bs_x}, {i}.")
+
+                    else:
+                        i += 1
+
+
+def check_power(x, y):
     for power in powers:
         if x == power.get_p_x() and y == power.get_p_y():
             print("You have found a power up!")
             search = random.randrange(0, 3)
             search = 0
             if search == 0:
-                print("You have activted the BFS search for treasure.")
-                binary_seach(bs_list, low, high, T)
+                print("You have activted the BS search for treasure.")
+                
+                for user in users:
+                    bs_x = user.get_x()
+                    for i in range(mrange):
+                        if bs_x == power.get_p_x() and i == power.get_p_y():
+                            print (f"Power found at {bs_x}, {i}.")
+                            
+                        elif bs_x == trap.get_tr_x() and y == trap.get_tr_y():
+                            print (f"Trap found at {bs_x}, {i}.")
+
+                        else:
+                            i += 1
+
             elif search == 1:
                 print("You have activated the DFS search for treasure.")
             elif search == 2:
-                print("You hve activated the BS search for treasure.")
+                print("You hve activated the BFS search for treasure.")
             
 
-def user_move(bs_list, low, high, T):
+def user_move():
     direction = input("Enter user movement. UP DOWN LEFT RIGHT: ").lower()
     for user in users:
         user.move(direction)
     for user in users:
         check_trap(user.get_x(), user.get_y())
         check_tresure(user.get_x(), user.get_y())
-        check_power(user.get_x(), user.get_y(), bs_list, low, high, T)
-    user_move(bs_list, low, high, T)
+        check_power(user.get_x(), user.get_y(), )
+    user_move()
 
 def error_message():
     print("""
@@ -344,5 +407,4 @@ power_place()
 user_start()
 print_map()
 time.sleep(1)
-bs_list = map_data
-user_move(bs_list, low, high, T)
+user_move()
