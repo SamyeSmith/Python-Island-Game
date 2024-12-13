@@ -378,7 +378,7 @@ def check_power(x, y):
         if x == power.get_p_x() and y == power.get_p_y():
             t_y = treasure.get_t_y
             print("You have found a power up!")
-            search = random.randrange(0, 4)
+            search = random.randrange(0, 2)
             # search = 3
             if search == 0:
                 print("You have activted the default search for treasure.")
@@ -395,13 +395,13 @@ def check_power(x, y):
                         else:
                             i += 1
 
+            # elif search == 3:
+            #     print("You have activated the DFS search for treasure.")
+            #     print("Not Implemented")
+            # elif search == 2:
+            #     print("You hve activated the BFS search for treasure.")
+            #     print("Not Implemented")
             elif search == 1:
-                print("You have activated the DFS search for treasure.")
-                print("Not Implemented")
-            elif search == 2:
-                print("You hve activated the BFS search for treasure.")
-                print("Not Implemented")
-            elif search == 3:
                 print("You have activated the BS search")
 
                 for i in range(mrange + 1):
